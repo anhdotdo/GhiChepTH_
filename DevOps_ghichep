@@ -1,0 +1,1851 @@
+GHI CHÉP DEVOPS THEO CHỦ ĐỀ 
+
+/Ngay 15/04/22_______________________________________________- 
+
+- tao vpc, subnet, security group bang terraform: 
+
+Terraform - Security Groups & EC2 instances - Cloud Walker 
+
+Tham khao them: 
+
+How to create VPC, Subnets, Route tables, Security groups and Instances using AWS CLI - DEV Community 
+
+Cai dat jenkins:  
+
+Cai jenkins on ubuntu: 
+
+How to Install Jenkins on Ubuntu 22.04 {Step-by-Step Guide} (phoenixnap.com) 
+
+Cai jenkins on amazon linux: 
+
+Step 1 : Connect to your Linux machine 
+
+SetUp JAVA PATH 
+
+Set up Custom TCP port: 8080 in AWS Security Groups 
+
+Step 2: Update Packages 
+
+   sudo yum update 
+
+Step 3 : Check Java is installed. If not install java   
+
+   java -version 
+
+   sudo yum install java-1.8.0 
+
+UPDATE --> sudo amazon-linux-extras install java-openjdk11 
+
+  
+
+   To check and select one out of multiple java versions available 
+
+   sudo /usr/sbin/alternatives --config java 
+
+ 
+
+Step 4 : Download latest Jenkins code package 
+
+   sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo 
+
+  
+
+Step 5 : Import a key file from Jenkins-CI to enable installation from the package 
+
+   sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key 
+
+   UPDATE --> sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key 
+
+  
+
+Step 6 : Install Jenkins 
+
+   sudo yum install jenkins 
+
+  
+
+Step 7 : Start jenkins 
+
+   sudo service jenkins start 
+
+  
+
+Step 8 : Access Jenkins server using the public DNS of your ec2 on port 8080 
+
+   http://{ec2-public-dns}:8080 
+
+   example : http://3.89.79.74:8080/ 
+
+             http://54.160.227.152:8080/ 
+
+  
+
+Note : Here you might have to allow port 8080 in your security group settings 
+
+Useful tips: 
+
+To start jenkins on a diff port 
+
+Update port number in /etc/sysconfig/jenkins 
+
+To fetch initial admin password 
+
+sudo su - 
+
+cd /var/lib/jenkins/secrets/ 
+
+cat initialAdminPassword 
+
+To stop Jenkins 
+
+sudo service jenkins stop 
+
+To uninstall Jenkins 
+
+sudo service jenkins stop 
+
+sudo yum remove jenkins 
+
+sudo rm -r /var/lib/jenkins 
+
+  
+
+jenkins URL: 
+
+http://<jenkins_server_ip>:8080/ 
+
+ 
+
+***cai dat ansible: 
+
+How To Install and Test Ansible on Linux (howtoforge.com) 
+
+ 
+
+- Run the playbook and verify Tomcat server is working on the target machine 
+
+//chay playbook 
+
++ ansible-playbook -I <path_to_ inventory_file> <file_playbook> 
+
+//kiem tra tomcat.service 
+
++ systemctl status tomcat.service 
+
+//kiem tra gui 
+
+http://<public_ip>:8080  --> http://54.83.183.69:8080 
+
+ 
+
+***Cai dat docker*** 
+
+How to Setup Jenkins in Docker Container? - GeeksforGeeks 
+
+$ sudo usermod –a –G docker ubuntu	: them user: ubuntu vao group docker 
+
+ 
+
+***CAC LENH DOCKER*** 
+
+- KIEM TRA CAI DAT DOCKER 
+
++ which docker 
+
+- bat dau docker service: 
+
++ service docker status 
+
++ service docker start 
+
++ docker info 
+
++ systemctl enable docker 
+
++ usermod -a -G docker ec2-user 
+
+- Kiem tra images/container: 
+
++ docker ps  
+
++ docker ps –a 
+
++ hoac: docker container ls --all 
+
++ docker image 
+
++ cat /etc/os-release	: kiem tra cac os 
+
++ exit : thoat container 
+
+- search available docker image on docker hub 
+
++ docker search <ten images> 
+
+- dowload docker images: 
+
++ hoac: docker pull <ten image>:<tag>	: tag mac dinh la phien ban moi nhat 
+
+- tao & chay container: mac dinh lay tu nguon docker hub 
+
++ docker run –it ubuntu 
+
++ docker run –it ubuntu /bin/bash	(-I: duy try stdin, -t: ket noi terminal de tuong tac) 
++ docker run –it -d --name <ten_container> -h <ten_hostname> -p <public-port>:<target-port>/protocol ... -v “<path_in_host>”:<path_in_container> 
+
+<ten_image> 
+
+- i: duy try stdin - interactive 
+
+- t, --tty: ket noi terminal  
+
+-d: detach mode 
+
++ docker run -d -I –t \ 
+
+--name <ten_container> \ 
+
+-h <ten_hostname> \ 
+
+-p <cong_phia_host_machine>:<cong_phia_container>/protocol \ 
+
+-v “<path_in_host>”:<path_in_container> 
+
+<ten_image> \ 
+
+/bin/sh		: mac dinh la /sh 
+
+- Lenh chay lenh trong container dang chay: 
+
+$ docker exec -d <ten_container> <lenh_thuc_thi_trong_container> 
+
+$ docker exec –it <ten_container> sh		: thuc thi sh shell   
+
+- khoi dong/ dung container: 
+
++ docker start <ma container> 
+
++ docker stop <container_id> 
+
+- dang nhap vao container: 
+
++ docker attach <ma container / ten container> 
+
+- xoa bo han container: 
+
++ docker container rm <container_id> 
+
+- xoa image: 
+
++ docker rmi <image_id> 
+
+- luu container thanh image: 
+
++ docker commit <ten container/container id> <ten image:phien ban> 
+
+- luu image ra file, nap image tu file 
+
++ docker save –output <ten file, vd: a.tar> <ten/id image> 
+
++ docker load -I <file chua image> 
+
++ docker tag <ten/id image> <ten image moi : version> 
+
+- trao doi du lieu: 
+
++ giua host vs container 
+
++ giua cac container 
+
++ quan ly cac o dia 
+
+- lam viec voi dockerfile:  
+
++ docker build –t <ten_image> .		: build dockerfile; “.” thu muc hien thoi 
+
++ docker run -d --name <ten container> -p <public port>:<target port> <name/id container> 
+
++ docker cp <path to file.war> <id container>:/usr/local/tomcat/webapps 
+
++ jar -cvf projectname.war *		: create war file 
+
+ 
+
+CAI DAT DOCKER & TAO JENKINS CONTAINER TREN EC2: 
+
+How to Setup Jenkins in Docker Container? - GeeksforGeeks 
+
+ 
+
+TAI LIEU HOC DOCKER: 
+
+docker exec | Docker Documentation 
+
+ 
+
+23/05/22_________________________________________________________ 
+
+- Kubernetes: 
+
++ both frontend and backend app 
+
++ fullstack app 
+
+ 
+
+CAI DAT MINIKUBE TREN AWS EC2: 
+
+Docker : Kubernetes Minikube install on AWS EC2 - 2020 (bogotobogo.com) 
+
+Setting up Minikube in EC2 - The Easy Way - DEV Community 
+
+ 
+
+ 
+
+ 
+
+< 
+
+#!bin/bash 
+sudo apt update 
+sudo apt upgrade -y 
+sudo hostnamectl set-hostname minikube 
+sudo apt-get install -y apt-transport-https ca-certificates curl 
+sudo apt-get update -y &&  sudo apt-get install -y docker.io 
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 
+
+UPDATE--> curl -LO https://github.com/kubernetes/minikube/releases/download/v1.23.0/minikube-linux-amd64 
+
+UPDATE--> curl -LO https://github.com/kubernetes/minikube/releases/download/v1.18.0/minikube-linux-amd64 
+sudo install minikube-linux-amd64 /usr/local/bin/minikube 
+snap install kubectl –classic 
+
+UPDATE--> https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux 
+
+sudo apt install conntrack -y 
+
+> 
+
+ 
+
+22/06/22______________________ 
+
+https://jhooq.com/aws-kubernetes-jenkins-pipeline/#1-setup-an-aws-ec2-instance 
+
+ 
+
+27/07/22___________________________ 
+
+Link Github Actions: 
+
+Github Actions - Viblo 
+
+CI/CD tutorial using GitHub Actions - DEV Community 
+
+Create a todo list in React - DEV Community 
+
+https://github.com/MichaelCurrin/node-project-template 
+
+https://github.com/MichaelCurrin/react-quickstart 
+
+Deploy your Node App to EC2 with Github Actions - DEV Community 
+
+ 
+
+Terraform vs github actions: 
+
+An Intro to GitHub Actions + Terraform + AWS | by Kyler Middleton | The Startup | Medium 
+
+Get started with AWS ECS using Terraform. | by Tim Okito | Warp 9 | Medium 
+
+Using Terraform to provision Amazon’s ECR, and ECS to manage containers (docker) — One World Coders 
+
+Application Security for Developers: SCA, DAST, and GitHub Actions - FOSSA 
+
+https://medium.com/tulcolabs/setting-up-hashicorp-vault-with-aws-5468074d87c3 
+
+ 
+
+ 
+
+Link POC L1: 
+
+Istio / Install with Helm 
+
+https://github.com/thangSu/thang-poc2 
+
+Install Prometheus and Grafana Using Helm | by Yst@IT | Medium 
+
+Istio / Getting Started 
+
+  
+
+JAVA WEB: 
+
+Lộ Trình Học JavaWeb Cho Người Mới Bắt Đầu (codelearn.io) 
+
+lập trình java core web học java core web học lập trình web với java core tại thành phố hồ chí minh (laptrinhjavaweb.com) 
+
+ 
+
+06/10/22_____________________ 
+
+start the XAMPP: 
+
+sudo /opt/lampp/./manager-linux-x64.run 
+
+Stop service: 
+
+sudo /opt/lampp/lampp stop 
+
+ 
+
+sudo /opt/lampp/lampp start 
+
+ 
+
+07/10/22__________________________ 
+
+3 cau lenh co ban SQL: 
+
++ tao csdl:  
+
+Create database <ten_csdl> 
+
+Character set “<kieu_ky_tu>” 
+
+Collate “<phan biet chu hoa, thuong?>” 
+
++ thay doi csdl: 
+
+Alter database <ten_csdl> 
+
+Character set “<>” 
+
+Collate “<>” 
+
++ xoa csdl: 
+
+Drop database “<ten_csdl>” 
+
+ 
+
+22/12/22_____________________________************************************ 
+
+Assignment -1 
+
+Launch EC-2 instance using Terraform  
+
+Connect to the instance. 
+
+Install Jenkins, Java and Python in the instance. 
+
+- 
+
+Assignment-2		 
+
+Availability of your Test Application in GitHub 
+
+Tack their versions every time a code is committed to Repo. 
+
+Create docker Jenkins Pipeline that will create a “Docker image” from Docker File and Host on the Docker hub. (Docker hub to store images) 
+
+It should also Pull the docker image and run it as docker container. 
+
+Build the docker Jenkins Pipeline to demonstrate the Continuous integration and Continuous delivery work flow. 
+
+ 
+
+Task 1: 
+
+1.  
+
++ main.tf, 1 module(variable.tf, provider.tf, main.tf(vpc, subnet, security group)) 
+
+ 
+
+AKIAVU2RHDVCH532NVF4 
+
+zXgV201eZunWYXjiCIpH+v9TGcNvjmFScTtwembJ 
+
+ami-0ab04b3ccbadfae1f 
+
+43.201.99.88 
+
+ssh -i "my_tf_key.pem" ubuntu@ec2-43-201-99-88.ap-northeast-2.compute.amazonaws.com 
+
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null 
+
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null 
+
+/var/lib/jenkins/secrets/initialAdminPassword 
+
+3de683699c3f43e28ecce6df13e2e4f5 
+
+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 
+
+https://github.com/anhdotdo/helloworld-test.git 
+
+23/12/22_________________________________****************************** 
+
+http://3.39.25.38:8080/ 
+
+node { 
+
+    stage("Git Clone"){ 
+
+  
+
+        git credentialsId: 'GIT_HUB_CREDENTIALS', url: 'https://github.com/anhdotdo/helloworld-test.git' 
+
+    } 
+
+  
+
+    stage("Docker build"){ 
+
+        sh 'whoami' 
+
+        sh 'sudo docker version' 
+
+        sh 'sudo docker build -t my-java-app .' 
+
+        sh 'sudo docker image list' 
+
+        sh 'sudo docker tag my-java-app anhdo98/my-java-app:v1' 
+
+    } 
+
+  
+
+    withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'PASSWORD')]) { 
+
+        sh 'sudo docker login -u anhdo98 -p $PASSWORD' 
+
+    } 
+
+  
+
+    stage("Push Image to Docker Hub"){ 
+
+        sh 'sudo docker push  anhdo98/my-java-app:v1' 
+
+    } 
+
+} 
+
+30/12/22______________________________**************************** 
+
+https://github.com/MichaelCade/90DaysOfDevOps/tree/main/2022/Days 
+
+09/01/22_______________________________*********************************** 
+
+Kafka topic: 
+
+Ansible Playbook to install KAFKA on Ubuntu - How to | Devops Junction (middlewareinventory.com) 
+
+10/01/22__________________________*************************************** 
+
+#!/bin/bash 
+ 
+for arg in "$@" 
+do 
+index=$(echo $arg | cut -f1 -d=) 
+val=$(echo $arg | cut -f2 -d=) 
+case $index in 
+X) x=$val;; 
+Y) y=$val;; 
+*) 
+esac 
+done 
+((result=x+y)) 
+echo "X+Y=$result" 
+
+03/02/23______________________****************************** 
+
+Link POC L0 vs L1: 
+
+https://hclo365-my.sharepoint.com/:p:/g/personal/thang_pham_hcl_com/Ef0dym8gua5Lu3st629fu0QBiz0CwNq853W73eM4w9vZ3A?e=XecxXB 
+
+Notes cua POC L0: 
+
++ Link Jenkins server vs Tomcat server: http://<ip>:<port> 
+
++ Link dien vao webhook: http://<ip_Jenkins>:<port>/github-webhook/ 
+
++ **/*.war 
+
++ file.war : duoc dung de deploy trong container tomcat remote. 
+
++ cau hinh tomcat server: 
+
+++ server.xml: thay doi cong tomcat 
+
+++ context.xml: cai dat tomcat server 
+
+28/02/23______________________________**************************************** 
+
+Tạo kubernetes cluster 3 node: 
+
+https://piyushchaudhariblog.wordpress.com/2021/10/06/how-to-setup-a-three-node-kubernetes-cluster-using-aws-ec2-instances/ 
+
+https://docs.docker.com/engine/install/ubuntu/#set-up-the-repository 
+
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml 
+
+ 
+
+-----------------------------------------********************************************* 
+
+1. Install Plugins in Jenkins 
+ 2. Connect Other Servers Like Tom Cat and Git using Jenkins 
+ 3. Prepare Freestyle pipeline in Jenkins and Deploy Sample docker Application in Tomcat. 
+
+4. Write SCM Pipeline get Pipeline script from Git Repo and Run the Job and Deploy into Tom-cat.  
+ 5. Connect with Docker and get the image and Push the image to Tomcat.   
+
+ 
+
+Requirement: 
+
+Docker file you need to Expalin Each Step. - CI Pipline Phase. 
+
+Where the docker image is Storing? 
+
+How you are getting that image and How you are deploying that image? CD Pipeline Phase. 
+
+Link source code: 
+
+https://github.com/anhdotdo/docker_app.git 
+
+ 
+
+_______________________________ 
+
+1. Install Plugins in Jenkins, Apache Tomcat on the same machine  
+2. Prepare Freestyle pipeline in Jenkins and Deploy Sample Application in Tomcat. 
+
+3. Write SCM Pipeline get Pipeline script from Git Repo and Run the Job and Deploy into Tom-cat.  
+   
+
+Link source code: 
+
+https://github.com/Rootbie/SampleApplication 
+
+Task 2: Phan Cuong, Nguyen Dung 
+
+Task 3: Nguyen Tai, Truong Loc 
+
+ 
+
+Hướng dẫn: 
+
+1. Install Plugins in Jenkins 
+ 2. Connect Other Servers Like Tom Cat and Git using Jenkins 
+
+=> tạo 2 ec2 instance, 1 ec2 cài đặt Jenkins, 1 ec2 còn lại cài đặt Tomcat 
+
++ Cài Jenkins vào 1 ec2 tham khảo bên dưới: 
+
+https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-22-04 
+
+Cụ thể: 
+
+B1: cài java 
+
+Link tham khảo: 
+
+https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04#installing-specific-versions-of-openjdk 
+
+Nhiều khi copy lệnh trên không chạy đc mà phải gõ lại bằng tay !!! 
+
+$ sudo apt update 
+
+$ java –version 
+
+$ sudo apt install default-jre 
+
+$java –version 
+
+$ sudo apt install default-jdk 
+
+$ javac –version 
+
+B2: cài jenkins  
+
+Link tham khảo: 
+
+https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-22-04 
+
+$ wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key |sudo gpg --dearmor -o /usr/share/keyrings/jenkins.gpg 
+
+$ sudo sh -c 'echo deb [signed-by=/usr/share/keyrings/jenkins.gpg] http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' 
+
+$ sudo apt update 
+
+$ sudo apt install jenkins 
+
+$ sudo systemctl start jenkins.service 
+
+$ sudo systemctl status jenkins 
+
+$ sudo cat /var/lib/jenkins/secrets/initialAdminPassword 
+
++ Trên Jenkins server đó, cài thêm docker để build image rồi push lên docker hub.... 
+
+https://docs.docker.com/engine/install/ubuntu/ 
+
+$ sudo apt-get update 
+
+$ sudo apt-get install \ 
+    ca-certificates \ 
+    curl \ 
+    gnupg 
+
+Lệnh trên đây vào link tham khảo copy lệnh tương ứng nếu không chạy đc hoặc gõ lệnh bằng tay. 
+
+$ sudo mkdir -m 0755 -p /etc/apt/keyrings 
+
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg 
+
+$ echo \ 
+
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \ 
+
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \ 
+
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null 
+
+$ sudo apt-get update 
+
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin 
+
+$ sudo docker run hello-world 
+
+Thêm command sau để add user ubuntu vào group docker 
+
+$ sudo usermod –a –G docker ubuntu 
+
+Thoát ra rồi vào lại để update 
+
+$ exit 
+
+$ ssh -i <path_to_file>.pem ubuntu@<public_ip> 
+
+$ docker version 
+
+ 
+
++ Cài Tomcat vào ec2 còn lại, tham khảo link bên dưới: 
+
+https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-10-on-ubuntu-20-04 
+
+Trong đó, thay vì cài tomcat 10 thì cài tomcat 9 vì Jenkins không hỗ trợ version 10, bằng cách thay link này : 
+
+https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.20/bin/apache-tomcat-10.0.20.tar.gz 
+
+Bằng link này: 
+
+https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.73/bin/apache-tomcat-9.0.73.tar.gz 
+
+ 
+
+$ sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat 
+
+$ sudo apt update 
+
+$ sudo apt install default-jdk 
+
+$ java –version 
+
+$ cd /tmp 
+
+$ wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.73/bin/apache-tomcat-9.0.73.tar.gz 
+
+$ sudo tar xzvf apache-tomcat-9*tar.gz -C /opt/tomcat --strip-components=1 
+
+$ sudo chown -R tomcat:tomcat /opt/tomcat/ 
+
+$ sudo chmod -R u+x /opt/tomcat/bin 
+
+$ sudo nano /opt/tomcat/conf/tomcat-users.xml 
+
+Tham khảo file tomcat-users.xml 
+
+ 
+
+$ sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml 
+
+Tham khảo: 
+
+ 
+
+$ sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml 
+
+Tham khảo: 
+
+ 
+
+ 
+
+ 
+ 3. Prepare Freestyle pipeline in Jenkins and Deploy Sample docker Application in Tomcat. 
+
+Docker file you need to Expalin Each Step. - CI Pipline Phase. 
+
+Where the docker image is Storing? 
+
+How you are getting that image and How you are deploying that image? CD Pipeline Phase. 
+
+=> Trên Jenkins server tạo 1 job có kiểu freestyle để deploy docker application có sẵn trong source code: https://github.com/anhdotdo/docker_app.git 
+
+4. Write SCM Pipeline get Pipeline script from Git Repo and Run the Job and Deploy into Tom-cat.  
+
+=> Trên Jenkins server tạo 1 job có kiểu pipeline để deploy docker application có sẵn trong source code: https://github.com/anhdotdo/docker_app.git 
+
+ 
+ 5. Connect with Docker and get the image and Push the image to Tomcat.   
+
+=> Trên Tomcat server chạy lệnh docker run image đã được push lên Docker hub trước đó. 
+
+ 
+
+ 
+
+tucChetdiduoc123@ 
+
+Trong đó, gồm các bước 
+
+++ Creating a key pair 
+
+Tạo file .pem để truy cập ec2 thông qua máy ảo giống như này: 
+
+ 
+
+Hoặc connect trực tiếp như này: click vào connect button 
+
+ 
+
+++ Creating a security group 
+
+++ Launching an Amazon EC2 instance 
+
+++ Installing and configuring Jenkins 
+
+Ngay 11/07/23____________________________________******************************** 
+
+HACKER RANK- OISV-Devops-Intermediate Assessment 
+
+1.  
+
+You want to deploy a web application using Terraform.  
+
+Complete a file stub "/home/ubuntu/1063862-terraform-secret-creation/main.tf" using HCL with one or more steps that do the following:  
+
+Initialize the provider plugin "hashicorp/local", at version "2.1.0".  
+
+Declare a variable "secret" that already passed to the apply target, with a reference environment variable as value.  
+
+Using a "local_file" resource, create a new file at path "/run/secret" with permissions "0600" and the value from the variable "secret". 
+
+ 
+
+=> TL: 
+
+File main.tf: 
+
+terraform { 
+
+  required_providers{ 
+
+    local = { 
+
+source = "hashicorp/local" 
+
+version = "2.1.0" 
+
+    } 
+
+  } 
+
+  required_version = ">= 0.15.0" 
+
+} 
+
+  
+
+variable "secret"{ 
+
+  default = "anhdo" 
+
+} 
+
+  
+
+resource "local_file" "create_file"{ 
+
+  content = var.secret 
+
+  filename = "/run/secret" 
+
+  file_permission = "0600" 
+
+} 
+
+  
+
+output "debug" { 
+
+  value = "Good luck! :)" 
+
+} 
+
+ 
+
+2. 
+
+You need to deploy a web application using Terraform. 
+
+Complete a file stub "/home/ubuntu/1063728-terraform-variables/main.tf" using HCL with one or more steps that do the following: 
+
+Declare the variable "dns_resolver", with type "set" of "strings" and default values "8.8.8.8" and "8.8.4.4".  
+
+Declare the variable "port", with type "integer" and default value "53".  
+
+Declare the variable "token", with type "string" and an empty default value.  
+
+Declare the variable "use_cache", with type "bool" and the default value "true".  
+
+Output the values of the "dns_resolver", "port", "token" and "use_cache" variables using "output" block. The output of the "token" variable must be declared as "sensitive". 
+
+ 
+
+==>> TL: 
+
+terraform { 
+
+  required_version = ">= 0.15.0" 
+
+} 
+
+  
+
+variable "dns_resolver"{ 
+
+  type = set(string) 
+
+  default = (["8.8.8.8", "8.8.4.4"]) 
+
+} 
+
+  
+
+variable "port"{ 
+
+  type = number 
+
+  default = 53 
+
+} 
+
+  
+
+variable "token"{ 
+
+  type = string 
+
+  default = "" 
+
+} 
+
+  
+
+variable "use_cache"{ 
+
+  type = bool 
+
+  default = true 
+
+} 
+
+  
+
+output "dns_resolver"{ 
+
+  value = var.dns_resolver 
+
+} 
+
+  
+
+output "port"{ 
+
+  value = var.port 
+
+} 
+
+  
+
+output "token"{ 
+
+  value = var.token 
+
+  sensitive = true 
+
+} 
+
+  
+
+output "use_cache"{ 
+
+  value = var.use_cache 
+
+} 
+
+  
+
+output "debug" { 
+
+  value = "Good luck! :)" 
+
+} 
+
+ 
+
+3. 
+
+You need to deploy a web application using Terraform. 
+
+Complete a file stub "/home/ubuntu/1064316-terraform-functions/main.tf" using HCL with one or more steps that do the following: 
+
+Declare the variable "ports", with type "list" of "numbers" that already passed to the apply target, with a reference environment variable as value. 
+
+Using corresponding HCL functions and "output" block with the name "ports_count", find and output a total number of all the ports in the "ports" variable. 
+
+Using corresponding HCL functions and "output" block with the name "ports_min", find and output the minimum port number from all the ports in the "ports" variable. 
+
+Using corresponding HCL functions and "output" block with the name "ports_max", find and output the maximum port number from all the ports in the "ports" variable. 
+
+==>>TL: 
+
+terraform { 
+
+  required_version = ">= 0.15.0" 
+
+} 
+
+  
+
+variable "ports"{ 
+
+  type = list(number) 
+
+} 
+
+  
+
+output "ports_count"{ 
+
+  value = count(var.ports) 
+
+} 
+
+  
+
+output "ports_min"{ 
+
+  value = min(var.ports...) 
+
+} 
+
+  
+
+output "ports_max"{ 
+
+  value = max(var.ports...) 
+
+} 
+
+  
+
+output "debug" { 
+
+  value = "Good luck! :)" 
+
+} 
+
+ 
+
+4.  
+
+ 
+
+5. 
+
+The task is to complete a file stub "/home/ubuntu/835915-docker-mastering-secrets/Dockerfile" with one or more steps that do the following: 
+
+Mounts a Docker secret file using the id "my-secret" and copies its content to the new file "/mysecret.txt" 
+
+==>> TL: 
+
+# syntax = docker/dockerfile:1.0-experimental 
+
+FROM busybox:latest 
+
+RUN echo "Good luck! :)" 
+
+RUN --mount=type=secret,id=my-secret cp /run/secrets/my-secret /my-secret.txt 
+
+ 
+
+6. 
+
+<Chưa đúng hoàn toàn> 
+
+The task is to complete a file stub "/home/ubuntu/835964-docker-immutables-fixing/script.sh" with one ot more steps that do the following:  
+
+Runs a new Docker container "my-container" from the "busybox" image (latest tag) in interactive background mode, without pseudo-TTY allocation. 
+
+Mounts the existing directory "/home/ubuntu/835964-docker-immutables-fixing" at "/mnt" of "mycontainer" container.  
+
+Implements a way to remove the "/mnt/my-immutable-file.txt" file from "my-container" container without any modifications from the host. 
+
+==>> TL: 
+
+#!/usr/bin/env bash 
+
+docker run -di --name example-container alpine 
+
+docker exec -i example-container echo "Good luck! :)" 
+
+  
+
+docker run -di -v /home/ubuntu/835964-docker-immutables-fixing:/mnt --name my-container busybox:latest 
+
+docker exec -i my-container /bin/ash -c "chattr -i /mnt/my-immutable-file.txt; rm -f /mnt/my-immutable-file.txt" 
+
+exit 0 
+
+ 
+
+7. 
+
+Run a new Docker container named “my-container” form thẻ “busybox” image in interactive gackgraound mode, without pseudo-TTY allocation. 
+
+Pass an existing environment variable “MY_ENVIRONMENT_VARIABLE” ti the “my-container” container 
+
+ 
+
+8. 
+
+Run a new container ‘my-container’ from ‘busybox’ image  
+
+Create a new network ‘my-network’ and assign it to the ‘my-container’ container  
+
+ 
+
+==>> TL: 
+
+docker run –di –name my-container busybox 
+
+docker network create my-network 
+
+Docker network connect my-network my-container 
+
+ 
+
+9. 
+
+ 
+
+ 
+
+apiVersion: v1 
+
+kind: Pod 
+
+metadata: 
+
+name: frontend 
+
+namespace: hacker-company 
+
+annotations: 
+
+publisher: “http://www.hacker-company.com” 
+
+labels: 
+
+environment: production 
+
+spec: 
+
+containers: 
+
+- name: nginx 
+
+  image: nginx:stable 
+
+ 
+
+10. 
+
+ 
+==>> TL: 
+
+kubectl patch statefulset builder -n hacker-company -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"maxUnavailable": "100%"}}}}' 
+
+END!__________________ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+HACKER RANK *************************____________________________ 
+
+Link AWS Cloudshell: 
+
+AWS CloudShell (amazon.com) 
+
+1. 
+
+ 
+
+==>> TL: 
+
+#!/bin/bash 
+
+# extract the archive 
+
+Tar –xzf /home/ubuntu/894899-linux-access-log-filtering/archive.tar.gz -C /tmp 
+
+# find 5xx status code records with IP address not equal to “127.0.0.1”. 
+
+Grep –h –E ‘^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] “[^”] +” [5-9][0-9][0-9][0-9]+ “.*” “.*” (?! 127\.0\.0\.1).*’ /tmp/*.log > /tmp/access.log 
+
+ 
+
+Trong đó, 
+
++ -x: extrac, -z: gzip compression đc sử dụng, -f: file, -C: thư mục đích. 
+
++  
+
+ 
+
+==>> TL2: (tham khảo) 
+
+#!/bin/bash 
+
+Tar –xzf archive.tar.gz 
+
+Grep –h ‘^[^ ]* [^ ]* [^ ]* \[[^]]*\] “[^”]*” [5-9][0-9][0-9] [^ ]*’ /home/ubuntu/894899-linux-access-log-filering/*.log | grep –v ‘ 127.0.0.1 ’ > /tmp/access.log  
+
+==>> TL3: (tham khảo) 
+
+#!/bin/bash 
+
+  
+
+# Extract the archive 
+
+tar -zxvf archive.tar.gz 
+
+  
+
+# Find 5xx status code records with IP not equal to 127.0.0.1 and output to /tmp/access.log 
+
+grep -hE '^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] "([^"]*)" ([5-9][0-9][0-9]) [^ ]+ [^ ]+ "([^"]*)" "([^"]*)" ' access.log.* | grep -vE '^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] "([^"]*)" ([5-9][0-9][0-9]) 127\.0\.0\.1 [^ ]+ "([^"]*)" "([^"]*)" ' > /tmp/access.log 
+
+v 
+
+2. 
+
+ 
+
+==>> TL: 
+
+#!/bin/bash 
+
+# Extract the archive 
+
+Tar –xzf /home/ubuntu/894065-linux-access-log-cleanup/archive.tar.gz -C /tmp 
+
+# Find records with identified IP addresses. 
+
+Grep –h –E ‘^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] “[^”]+” [^ ]+ [^ ]+ “.*” “.*” [^ ]+’ /tmp/*.log > /tmp/access.log 
+
+ 
+
+3.  
+
+As part of deploying a large project on AWS for your company, you need to create an AWS identity and Access Management (IAM) group and new IAM users in it. 
+
+Using the AWS command Line interface (AWS CLI): 
+
++ Create a new IAM group Deployers 
+
++ create a new IAM user Auto in the group Deployers with the following tags assigned (Key => Value) 
+
+++ Role -> Deployment 
+
+++ Mode -> Auto 
+
++ Create a new IAM user Manual in the group Deployers with the following tags assigned (Key => Value): 
+
+++ Role -> Deployment 
+
+++ Mode -> Manual 
+
+==>> TL: 
+
+$ aws iam create-group --group-name Deployers 
+
+$ aws iam create-user –user-name Auto 
+
+$ aws iam add-user-to-group --user-name Auto --group-name Deployers 
+
+$ aws iam tag-user --user-name Auto --tags ‘[{“key”:”Role”, “Value”:”Deployment”}, {“Key”:”Mode”, “Value”:”Auto”}]’ 
+
+ 
+
+$ aws iam create-user –user-name Manual 
+
+$ aws iam add-user-to-group --user-name Manual--group-name Deployers 
+
+$ aws iam tag-user --user-name Auto --tags ‘[{“key”:”Role”, “Value”:”Deployment”}, {“Key”:”Mode”, “Value”:”Manual”}]’ 
+
+ 
+
+4. 
+
+ 
+
+==>> TL: 
+
+$ aws lambda create-function \ 
+
+--function-name generate-token \ 
+
+--runtime nodejs14.x \ 
+
+--role arn:aws:iam::000000000000:role/token-generator \ 
+
+--handler index.handler \ 
+
+--zip-file fileb://tmp/1387123-aws-lambda-function-creating/token-generator.zip 
+
+END!_________________ 
+
+ 
+
+GREP COMMAND 
+
++ cú pháp: 
+
+$ grep [option] pattern [file] 
+
++ cac option hay dung: 
+
+++ -i, --ignore-case: lờ đi các trường hợp khác biệt với mẫu 
+
+++ -v, --invert-match: chọn các trường hợp không khớp 
+
+++ -n, --line-number: đưa lên đầu dòng số thứ tự dòng trùng khớp tương ứng trong file đầu vào 
+
+++ -w, --word-regexp: tim từ chính xác và in ra dòng đó 
+
+++ -c, --count: đếm số lần khớp và in ra các dòng đó 
+
+End grep command! _________________ 
+
+ 
+
+HACKER RANK DEVOPS ADVANCED 
+
+1. Đề bài 
+
+When you finish work on deployment update process, you decide to make a cleanup process for redundant Docker images and containers left after switching the application stack. 
+
+Complete the file stub “/home/ubuntu/1321867-docker-deployment-cleanup/script.sh” with onr or more steps that do the following. 
+
++ Elininate all the Docker containers not inherited from the “hackerapp” Docker image.  
+
++ Eliminate all the Docker containers not labeled with “com.hackerapp.role=production” 
+
++ Eliminate all the Docker images not labeled with “com.hackerapp.role=production”. 
+
+Other Docker containers and images must be untouched 
+
+The Docker entities will be dynamically created during evaluation, their IDS must not be hardcoded!  
+
+ 
+
+==>> TL tham khao, chua dung: 
+
+#!/bin/bash 
+
+Docker ps –a –filter “not ancestor=hackerapp” -q| xargs docker rm –f 
+
+Docker ps –a –filter “label!=com.hackerapp.role=production” -q| xargs docker rm –f 
+
+Docker images –filter “dangling=false” --filter “label!=com.hackerapp.role=production” -q | xargs docker rmi –f 
+
+2. De bai 
+
+As part of a security audit of a company’s project deployed on AWS, they need to secure an existing S3 Bucker In order to objects through the S3 API 
+
+Using the AWS command line interface (AWS CLI), update the existing S3 bucket policy “1346425-aws-s3-storage-securing”. 
+
++ Enable the “s3:GetObject” action only on the “12.34.56.0/24” subnet for any principal (part of the ARN id “1346425-aws-s3-storage-protection/*”) 
+
++ Completely disable the “s3:GetObject” action on a “private” subresource (part of the ARN is “1346425-aws-s3-storage-protect/private/*”) 
+
+==>> TL: 
+
+$ aws s3api put-bucket-policy --bucket 1346425-aws-s3-storage-securing --policy '{ 
+
+  "Version": "2012-10-17", 
+
+  "Statement": [ 
+
+    { 
+
+      "Sid": "AllowGetObjectFromSpecificIP", 
+
+      "Effect": "Allow", 
+
+      "Principal": "*", 
+
+      "Action": "s3:GetObject", 
+
+      "Resource": "arn:aws:s3:::1346425-aws-s3-storage-protection/*", 
+
+      "Condition": { 
+
+        "IpAddress": { 
+
+          "aws:SourceIp": "12.34.56.0/24" 
+
+        } 
+
+      } 
+
+    }, 
+
+    { 
+
+      "Sid": "DenyGetObjectOnPrivateSubresource", 
+
+      "Effect": "Deny", 
+
+      "Principal": "*", 
+
+      "Action": "s3:GetObject", 
+
+      "Resource": "arn:aws:s3:::1346425-aws-s3-storage-protect/private/*" 
+
+    } 
+
+  ] 
+
+}' 
+
+ 
+
+3. De bai 
+
+ 
+
+==>> TL: 
+
+#!/bin/bash 
+
+  
+
+# Find all Docker containers labeled "com.hackerapp.cluster=alpha" 
+
+container_ids=$(docker ps -q --filter "label=com.hackerapp.cluster=alpha") 
+
+  
+
+# Loop through the container IDs and set the memory limit and restart policy 
+
+for id in $container_ids 
+
+do 
+
+  # Set memory limit to 64Mb 
+
+  docker update --memory="64m" $id 
+
+   
+
+  # Set restart policy to not more than 5 times after failure 
+
+  docker update --restart-policy="on-failure:5" $id 
+
+Done 
+
+ 
+
+4. De bai 
+
+ 
+
+==>>TL: 
+
+$ git config user.name "Hacker Developer" 
+
+$ git config user.email hacker.developer@hackercompany.com 
+
+ 
+
+Tao va edit file: .git/hooks/pre-commit. File này sẽ được tự động thực thi trước mỗi lần commit. 
+
+#!/bin/bash 
+
+# Reject commits that add "junk" files with the specified extensions 
+
+if git diff --cached --name-only --diff-filter=A | grep -E '\.(tmp|swp)$' > /dev/null ; then 
+
+    echo "Junk files are not allowed" 
+
+    exit 1 
+
+fi 
+
+$ chmod +x .git/hooks/pre-commit 
+
+Kiểm tra lại:  
+
+Test the functionality by creating a new "junk" file with a ".tmp" or ".swp" extension, adding it to the staging area, and attempting to commit it. The commit should be rejected with the message "Junk files are not allowed". Files with these extensions can still be modified or deleted normally. 
+
+ 
+
+END! hackder rank devops advanced_______________ 
+
+ 
+
+PHAN BIET LIST, TUPLE, SET, DICTIONARY IN JAVA 
+
++ LIST: 
+
+++ có thứ tự (có chỉ mục), có thể thay đổi, cho phép giá trị lặp lại 
+
+++ khai báo: l=[1, 2, 3] 
+
++ TUPLE: 
+
+++ có thứ tự, không thể thay đổi, cho phép giá trị trùng lặp 
+
+++ khai báo: t = (1, 2, 3) 
+
++ SET: 
+
+++ không có thứ tự (-> không thể thay đổi), không cho phép giá trị lặp lại 
+
+++ khai báo: s = {1, 2, 3} 
+
++ DICTIONARY: 
+
+++ không có thứ tự, có thể thay đổi, không cho phép giá trị lặp lại 
+
+++ khai báo: d = {“name”:”do”, “age”:25} 
+
+END phan biet list, tuple, set va dict 
+
+ 
+
+JAVACRIPT_CODELEARN.IO 
+
+bdjfdf 
+
+ 
+
+END! Javascript codelearn.io 
+
+_____________________________________ 
+
+BASIC_ALGORITHMS_CODELEARN.IO 
+
+bdjfdf 
+
+ 
+
+END! Basic algorithms codelearn.io 
+
+___________________________________________ 
+
+DATA_STRUCTURE_AND_ALGORITHMS_CODELEARN.IO 
+
+bdjfdf 
+
+ 
+
+END! Data structure and algorithms codelearn.io 
+
+___________________________________________ 
+
+HACKER RANK -  
+
+1- DE BAI: 
+
+You want to deploy a web application using Terraform. As part of the process, complete the file stub "/home/ubuntu/1076518-terraform-kubernetes-deployment/main.tf" using HCL with one or more steps that do the following: 
+
+• Initialize the provider plugin "hashicorp/kubernetes", at version "2.2.0". 
+
+• Add "/etc/rancher/k3s/k3s.yaml" to the "hashicorp/kubernetes" provider configuration as the config path. 
+
+• Using proper "hashicorp/kubernetes" resources, implement the deployment of "Kubernetes" application stack described in the existing "definition.yml" as HCL instructions in the "main.tf" file. 
+
+Note 
+
+The completed solution will be evaluated in a new, clean environment. Be sure everything 
+
+is in the "/home/ubuntu/1076518-terraform-kubernetes-deployment" folder. 
+
+• Tasks should execute with "sudo solve" invoked from the question directory. 
+
+. You have sudo access. 
+
+Grading 
+
+• The execution of "sudo solve" invoked from the question directory solves the task 
+
+ 
+
+LOI GIAI:? 
+
+ 
+
+2. DE BAI: 
+
+Docker: Immutables Fixing 
+
+The task is to complete a file stub "/home/ubuntu/835964-docker-immutables-fixing/script.sh" with one of more steps that do the following: 
+
+• Runs a new Docker container "my-container" from the "busybox" image (latest tag) in interactive background mode, without pseudo-TTY allocation 
+
+• Mounts the existing directory "/home/ubuntu/835964-docker-immutables-fixing" at "/mnt" of "my-container container. 
+• Implements a way to remove the "/mnt/my-immutable-file.txt" file from "my-container" container without any modifications from the host. 
+
+Note 
+
+The completed solution will be evaluated in a new, clean environment. Be sure everything is in the "/home/ubuntu/835964-docker-immutables-fixing" folder. 
+. All the tasks should be done within a simple "sudo solve" execution invoked from the question directory. 
+
+• Docker is already installed. 
+
+You have sudo access. 
+
+Grading 
+
+The execution result of "docker exec-i my-container rm -f/mnt/my-immutablo-file,bx" outputs an error. 
+• The execution result of "docker exec-i my-container /bin/ash -c "chattri /mnt/my-immutable-file.txt; rm - 
+f /mnt/my-immutable-file.txt successfully removes the file from both the container volume and the host. 
+
+ 
+
+LOI GIAI: ? 
+
+ 
+
+3. DE BAI: 
+Resource Quota: Implementation 
+
+Complete the file stub "/home/ubuntu/1162947-kubernetes-resource-quota-Implementation/definition.yml with one or more steps that do the following: 
+
+creates a new Resource Quota named "standard" with hard limits, specifies a memory limit as "256Mb" and maximum number of pods as "1" 
+
+creates a new Resource Quota named "premium" with hard limits, specifies a memory limit as "2Gb" and maximum number of pods as "10" 
+
+Note: 
+
+The completed solution will be evaluated in a new, clean environment. ANY CHANGES MADE MANUALLY WILL BE LOST ONLY CHANGES TO THE "definition.yml" FILE IN "/home/ubuntu/1162947-kubernetes-resource-quota-implementation" WILL BE CARRIED TO THE NEW ENVIRONMENT 
+
+The result of "sudo solve", invoked from the question directory, should solve the task 
+
+You have sudo privileges, if needed. 
+
+ 
+
+LOI GIAI: ? 
+
+apiVersion: v1 
+kind: ResourceQuota 
+metadata: 
+  name: standard 
+spec: 
+  hard: 
+    limits.memory: "256Mi" 
+    pods: "1" 
+
+--- 
+apiVersion: v1 
+kind: ResourceQuota 
+metadata: 
+  name: premium 
+spec: 
+  hard: 
+    limits.memory: "2Gi" 
+    pods: "10" 
+
+ 
+
+4- DE BAI: 
+
+Kubernetes: Service ClusterIP 
+
+A web application built on Kubernetes must be deployed. Complete the file stub "/home/ubuntu/931544-kubemetes-service-clusterip/definition.yml" with one or more steps that do the following: 
+
+• Create a new namespace "hacker-company". 
+
+• Deploy a new "nginx image (from Dockerhub) as the container "nginx" on the "stable" tag as the pod "frontend" and in the "hacker-company' namespace. 
+
+• Create a new "role" label with the value "frontend" at the "frontend" pod. • Create a new "frontend" service ("ClusterIP type). Forward port "80" of the "nginx" container in "frontend" pod to port "8888" 
+
+Note 
+
+• The completed solution will be evaluated in a new, clean environment. Be sure everything is in the "/home/ubuntu/931544-kubernetes-service-clusterip" folder. 
+
+• All the tasks should be done within a simple "sudo solve" execution invoked from the question directory. 
+
+• You have sudo access. 
+
+Grading 
+
+The execution result of "sudo solve invoked from the question directory solves the task. 
+
+ 
+
+LOI GIAI:? 
+
+ 
+
+apiVersion: v1 
+
+kind: Namespace 
+
+metadata: 
+
+  name: hacker-company 
+
+--- 
+
+apiVersion: v1 
+
+kind: Pod 
+
+metadata: 
+
+  name: frontend 
+
+  namespace: hacker-company 
+
+  labels: 
+
+    role: frontend 
+
+spec: 
+
+  containers: 
+
+  - name: nginx 
+
+    image: nginx:stable 
+
+--- 
+
+apiVersion: v1 
+
+kind: Service 
+
+metadata: 
+
+  name: frontend 
+
+  namespace: hacker-company 
+
+spec: 
+
+  type: ClusterIP 
+
+  ports: 
+
+  - name: http 
+
+    port: 80 
+
+    targetPort: 8888 
+
+  selector: 
+
+    role: frontend 
+
+ 
+
+5- DE BAI: 
+
+Linux: Authentication Log Reporting 
+
+Complete the file stub "/home/ubuntu/898797-linux-authentication-log-reporting/script.sh" with one more steps that do the following: 
+
+Using two existing log files "home/ubuntu/898797-linux-authentication-log-reporting/event.log" (columns "uuid" "datestamp" and "status") 
+and "/home/ubuntu/898797-linux-authentication-log- reporting person log" (columnis "uuid" and "login") 
+• Find all the users who entered the system ("status" is equal to the "success") 
+
+• Output their "login" as the result to "/tmp/report.txt" using the newline as the delimiter 
+
+Note 
+
+• The completed solution will be evaluated in a new, clean environment. Be sure everything is in the home/ubuntu/898797-linux-authentication-log-reporting" folder 
+
+• All the tasks should be done within a simple "sudo solve" execution invoked from the question directory. 
+
+• You have sudo access 
+
+Grading 
+
+• The execution result of "sudo solve" invoked from the question directory solves the task 
+
+ 
+
+LOI GIAI:? 
+
+END! Data structure and algorithms codelearn.io 
+
+___________________________________________ 
